@@ -25,7 +25,6 @@ class FilterModule(object):
         return flag
 
     def getvolumes(self, ovirt_heal_response):
-        'Return 1 if heal is in progress else 0'
         return self._parse_host_volume_result(ovirt_heal_response)
 
     @staticmethod
@@ -34,5 +33,4 @@ class FilterModule(object):
         for vol in json.loads(volumes.get('content')).get('gluster_volume'):
             if(vol.get('volume_type') == 'replicate'):
                 list_volumes.append(vol.get('name'))
-        print(list_volumes)
         return list_volumes

@@ -77,12 +77,13 @@
         headers:
           Authorization: "Bearer {{ ovirt_auth.token }}"
           Accept: "application/json"
-      register: json
+      register: host_volumes
       when: cluster_info.ovirt_clusters[0].gluster_service == True
 
     - name: Fetch Volumes
       set_fact:
-        volumes: "{{ json | getvolumes }}"
+        volumes: "{{ host_volumes | getvolumes }}"
+      when: cluster_info.ovirt_clusters[0].gluster_service == True
 
     - block:
       - name: Print - no hosts to be updated

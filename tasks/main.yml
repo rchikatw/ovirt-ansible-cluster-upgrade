@@ -66,6 +66,24 @@
       check_mode: "no"
       register: host_info
 
+    - name: Get Host volumes
+      no_log: false
+      uri:
+        url: "{{ ovirt_auth.url }}/clusters/{{ cluster_info.ovirt_clusters[0].id }}/glustervolumes"
+        method: GET
+        body_format: json
+        validate_certs: false
+        return_content: yes
+        headers:
+          Authorization: "Bearer {{ ovirt_auth.token }}"
+          Accept: "application/json"
+      register: json
+      when: cluster_info.ovirt_clusters[0].gluster_service == True
+
+    - name: Fetch Volumes
+      set_fact:
+        volumes: "{{ json | getvolumes }}"
+
     - block:
       - name: Print - no hosts to be updated
         debug:

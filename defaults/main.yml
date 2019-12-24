@@ -11,4 +11,4 @@ host_statuses:
 host_names:
   - '*'
 pinned_vms_names: []
-volumes:[]
+volumes: []

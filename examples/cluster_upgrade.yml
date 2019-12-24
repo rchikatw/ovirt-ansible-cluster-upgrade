@@ -19,10 +19,6 @@
     host_names:
       - myhost1
       - myhost2
-    volumes:
-      - volume1
-      - volume2
-    check_upgrade: True
 
   roles:
     - ovirt.cluster-upgrade

@@ -41,6 +41,8 @@ Role Variables
 | check_upgrade           | false                 | If true, run check_for_upgrade action on all hosts before executing upgrade on them. If false, run upgrade only for hosts with available upgrades and ignore all other hosts. |
 | reboot_after_upgrade    | true                  | If true reboot hosts after successful upgrade. |
 | use_maintenance_policy  | true                  | If true the cluster policy will be switched to cluster_maintenance during upgrade otherwise the policy will be unchanged. |
+| volumes                 | UNDEF                 | When the gluster service is enabled on the cluster, List of volumes fetched and used to check self heal. |
+
 
 Dependencies
 ------------

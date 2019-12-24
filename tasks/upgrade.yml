@@ -45,18 +45,19 @@
       - description: "Upgrading host: {{ item.name }}"
 
 - name: Gather self-heal facts about all gluster hosts in the cluster
+  # TODO: retry and delay removed because when added deligate_to it is not working as expected
   gluster_heal_facts:
     name: "{{ volume_item }}"
     status_filter: self-heal
   register: self_heal_status
   until: "self_heal_status | ovirtselfheal == False"
-  delay: 1800
-  retries: 1
+  delegate_to: "{{ ovirt_hosts[0].name }}"
   with_items:
     - "{{ volumes }}"
   loop_control:
     loop_var: volume_item
-  when:  cluster_info.ovirt_clusters[0].gluster_service  == True
+  when:  ovirt_clusters[0].gluster_service | bool
+
 
 - name: Upgrade host
   ovirt_host:

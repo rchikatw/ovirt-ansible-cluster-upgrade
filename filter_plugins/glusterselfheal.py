@@ -5,8 +5,7 @@ class FilterModule(object):
     def filters(self):
         'Define filters'
         return {
-            'ovirtselfheal': self.ovirtselfheal,
-            'getvolumes': self.getvolumes
+            'ovirtselfheal': self.ovirtselfheal
         }
 
     def ovirtselfheal(self, ovirt_heal_response):
@@ -23,14 +22,3 @@ class FilterModule(object):
                         flag = True
                         break;
         return flag
-
-    def getvolumes(self, ovirt_heal_response):
-        return self._parse_host_volume_result(ovirt_heal_response)
-
-    @staticmethod
-    def _parse_host_volume_result(volumes):
-        list_volumes = []
-        for vol in json.loads(volumes.get('content')).get('gluster_volume'):
-            if(vol.get('volume_type') == 'replicate'):
-                list_volumes.append(vol.get('name'))
-        return list_volumes

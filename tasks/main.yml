@@ -32,6 +32,8 @@
       ovirt_cluster_info:
         auth: "{{ ovirt_auth }}"
         pattern: "name={{ cluster_name }}"
+        fetch_nested: True
+        nested_attributes: name
       check_mode: "no"
       register: cluster_info
 
@@ -66,24 +68,10 @@
       check_mode: "no"
       register: host_info
 
-    - name: Get Host volumes
-      no_log: false
-      uri:
-        url: "{{ ovirt_auth.url }}/clusters/{{ cluster_info.ovirt_clusters[0].id }}/glustervolumes"
-        method: GET
-        body_format: json
-        validate_certs: false
-        return_content: yes
-        headers:
-          Authorization: "Bearer {{ ovirt_auth.token }}"
-          Accept: "application/json"
-      register: host_volumes
-      when: ovirt_clusters[0].gluster_service | bool and ovirt_hosts | length != 0
-
-    - name: Fetch Volumes
+    - name: Set Volumes
       set_fact:
-        volumes: "{{ host_volumes | getvolumes }}"
-      when: ovirt_clusters[0].gluster_service | bool and ovirt_hosts | length != 0
+        volumes: "{{ ovirt_clusters[0].gluster_volumes }}"
+      when:  ovirt_clusters[0].gluster_service | bool
 
     - block:
       - name: Print - no hosts to be updated

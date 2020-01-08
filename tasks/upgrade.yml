@@ -50,7 +50,7 @@
     name: "{{ volume_item.name }}"
     status_filter: self-heal
   register: self_heal_status
-  until: "self_heal_status | ovirtselfheal == False"
+  until: "self_heal_status.glusterfs.heal_info | map(attribute='no_of_entries') | list | map('int') | sum == 0"
   delegate_to: "{{ ovirt_hosts[0].name }}"
   with_items:
     - "{{ volumes }}"

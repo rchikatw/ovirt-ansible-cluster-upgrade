@@ -59,7 +59,6 @@
     loop_var: volume_item
   when:  ovirt_clusters[0].gluster_service | bool
 
-
 - name: Upgrade host
   ovirt_host:
     auth: "{{ ovirt_auth }}"

@@ -52,12 +52,12 @@
   retries: 6
   delay: 300
   until: "self_heal_status.glusterfs.heal_info | map(attribute='no_of_entries') | list | map('int') | sum == 0"
-  delegate_to: "{{ ovirt_hosts[0].name }}"
+  delegate_to: "{{ host_info.ovirt_hosts[0].address }}"
   with_items:
-    - "{{ volumes }}"
+    - "{{ cluster_info.ovirt_clusters[0].gluster_volumes }}"
   loop_control:
     loop_var: volume_item
-  when:  ovirt_clusters[0].gluster_service | bool
+  when:  cluster_info.ovirt_clusters[0].gluster_service | bool
 
 - name: Upgrade host
   ovirt_host:

@@ -68,11 +68,6 @@
       check_mode: "no"
       register: host_info
 
-    - name: Set Volumes
-      set_fact:
-        volumes: "{{ ovirt_clusters[0].gluster_volumes }}"
-      when:  ovirt_clusters[0].gluster_service | bool
-
     - block:
       - name: Print - no hosts to be updated
         debug:

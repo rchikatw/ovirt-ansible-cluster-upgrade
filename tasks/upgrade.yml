@@ -49,8 +49,8 @@
     name: "{{ volume_item.name }}"
     status_filter: self-heal
   register: self_heal_status
-  retries: 6
-  delay: 300
+  retries: "{{ heal_retries }}"
+  delay: "{{ heal_delay }}"
   until: >
      self_heal_status is defined and
      self_heal_status.glusterfs.heal_info | map(attribute='no_of_entries') | select('defined') | list | map('int') | sum == 0
@@ -61,6 +61,17 @@
     loop_var: volume_item
   when:  cluster_info.ovirt_clusters[0].gluster_service | bool
 
+- name: Refresh gluster heal info entries to database
+  uri:
+    url: "{{ ovirt_auth.url }}/clusters/{{ cluster_info.ovirt_clusters[0].id }}/refreshglusterhealstatus"
+    method: POST
+    body_format: json
+    validate_certs: false
+    headers:
+      Authorization: "Bearer {{ ovirt_auth.token }}"
+    body: "{}"
+  when: cluster_info.ovirt_clusters[0].gluster_service | bool
+
 - name: Upgrade host
   ovirt_host:
     auth: "{{ ovirt_auth }}"
@@ -69,6 +80,11 @@
     check_upgrade: "{{ check_upgrade }}"
     reboot_after_upgrade: "{{ reboot_after_upgrade }}"
     timeout: "{{ upgrade_timeout }}"
+
+- name: Gluster heal wait check when multiple hosts are present, Heal take some time to update entries after host is up
+  pause:
+    minutes: "{{ gluster_heal_wait }}"
+  when:  cluster_info.ovirt_clusters[0].gluster_service | bool and host_info.ovirt_hosts | length > 1
 
 - name: Finish ovirt job step
   ovirt_job:

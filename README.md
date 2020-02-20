@@ -41,6 +41,9 @@ Role Variables
 | check_upgrade           | false                 | If true, run check_for_upgrade action on all hosts before executing upgrade on them. If false, run upgrade only for hosts with available upgrades and ignore all other hosts. |
 | reboot_after_upgrade    | true                  | If true reboot hosts after successful upgrade. |
 | use_maintenance_policy  | true                  | If true the cluster policy will be switched to cluster_maintenance during upgrade otherwise the policy will be unchanged. |
+| heal_retries            | 6                     | Maximum Number of times heal check to be done if it fails. |
+| heal_delay              | 300                   | The Interval between each retry for heal to check    |
+| gluster_heal_wait       | 5                     | Waiting time after host upgrade finish.             |
 
 Dependencies
 ------------

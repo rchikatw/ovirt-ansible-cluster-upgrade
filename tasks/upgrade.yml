@@ -49,8 +49,8 @@
     name: "{{ volume_item.name }}"
     status_filter: self-heal
   register: self_heal_status
-  retries: "{{ heal_retries }}"
-  delay: "{{ heal_delay }}"
+  retries: "{{ healing_in_progress_checks }}"
+  delay: "{{ healing_in_progress_check_delay }}"
   until: >
      self_heal_status is defined and
      self_heal_status.glusterfs.heal_info | map(attribute='no_of_entries') | select('defined') | list | map('int') | sum == 0
@@ -81,10 +81,12 @@
     reboot_after_upgrade: "{{ reboot_after_upgrade }}"
     timeout: "{{ upgrade_timeout }}"
 
-- name: Gluster heal wait check when multiple hosts are present, Heal take some time to update entries after host is up
+- name: Delay in minutes to wait to finish gluster healing process after successful host upgrade
   pause:
-    minutes: "{{ gluster_heal_wait }}"
-  when:  cluster_info.ovirt_clusters[0].gluster_service | bool and host_info.ovirt_hosts | length > 1
+    minutes: "{{ wait_to_finish_healing }}"
+  when:
+    - cluster_info.ovirt_clusters[0].gluster_service | bool
+    - host_info.ovirt_hosts | length > 1
 
 - name: Finish ovirt job step
   ovirt_job:
